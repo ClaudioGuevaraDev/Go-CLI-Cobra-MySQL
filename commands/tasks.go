@@ -68,4 +68,16 @@ var UpdateTaskCommand = &cobra.Command{
 var DeleteTaskCommand = &cobra.Command{
 	Use:   "delete",
 	Short: "Delete a task",
+	Args:  cobra.MinimumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		id := args[0]
+
+		sql := "DELETE FROM tasks WHERE id = ?"
+		if _, err := database.DB.Query(sql, id); err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		fmt.Println("Task deleted")
+	},
 }
