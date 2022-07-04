@@ -81,6 +81,21 @@ var GetTaskCommand = &cobra.Command{
 var UpdateTaskCommand = &cobra.Command{
 	Use:   "update",
 	Short: "Update a task",
+	Args:  cobra.MinimumNArgs(3),
+	Run: func(cmd *cobra.Command, args []string) {
+		id := args[0]
+		title := args[1]
+		description := args[2]
+
+		sql := "UPDATE tasks SET title = ?, description = ? WHERE id = ?"
+		_, err := database.DB.Exec(sql, title, description, id)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		fmt.Println("Task updated")
+	},
 }
 
 var DeleteTaskCommand = &cobra.Command{
