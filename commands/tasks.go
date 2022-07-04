@@ -58,6 +58,24 @@ var ListTasksCommand = &cobra.Command{
 var GetTaskCommand = &cobra.Command{
 	Use:   "get",
 	Short: "Get a task",
+	Args:  cobra.MinimumNArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		id := args[0]
+		var tasks []helpers.Task
+
+		sql := "SELECT * FROM tasks WHERE id = ?"
+		res := database.DB.QueryRow(sql, id)
+
+		var task helpers.Task
+		if err := res.Scan(&task.ID, &task.Title, &task.Description); err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		tasks = append(tasks, task)
+
+		helpers.CreateTable(tasks)
+	},
 }
 
 var UpdateTaskCommand = &cobra.Command{
